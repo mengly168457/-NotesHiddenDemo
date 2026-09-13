@@ -2,17 +2,6 @@ workflows:
   ios-demo:
     name: Notes Hidden Demo
     instance_type: mac_mini_m2
-
-    environment:
-      xcode: latest
-
-    scripts:
-      - name: Extract Xcode project
-        script: |
-          rm -rf "$CM_BUILD_DIR/project"
-          mkdir -p "$CM_BUILD_DIR/project"
-          unzip -q "$CM_BUILD_DIR/NotesHiddenDemo_XcodeProject.zip" -d "$CM_BUILD_DIR/project"
-
       - name: Build unsigned app
         script: |
           cd "$CM_BUILD_DIR/project/NotesHiddenDemoXcode"
@@ -25,9 +14,12 @@ workflows:
             -destination "generic/platform=iOS" \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
+            PRODUCT_NAME=NotesHiddenDemo \
             CONFIGURATION_BUILD_DIR="$CM_BUILD_DIR/build"
+    environment:
+      xcode: latest
 
-      - name: Create IPA
+    
         script: |
           mkdir -p "$CM_BUILD_DIR/build/ipa/Payload"
           cp -R "$CM_BUILD_DIR/build/NotesHiddenDemo.app" \
